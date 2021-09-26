@@ -1,3 +1,1 @@
 slack-bolt==1.7.0
-aws-wsgi==0.2.6
-Flask==1.1.1

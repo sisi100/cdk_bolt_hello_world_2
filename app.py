@@ -1,7 +1,7 @@
 import os
 
 from aws_cdk import core
-from aws_cdk.aws_apigateway import LambdaRestApi
+from aws_cdk.aws_apigateway import LambdaIntegration, RestApi
 from aws_cdk.aws_lambda import Runtime
 from aws_cdk.aws_lambda_python import PythonFunction
 from aws_cdk.aws_ssm import StringListParameter
@@ -18,7 +18,8 @@ class CdkBoltHelloWorldStack(core.Stack):
             self, f"{APP_NAME}Lambda", entry="cdk_bolt_hello_world", handler="handler", runtime=Runtime.PYTHON_3_8,
         )
 
-        LambdaRestApi(self, f"{APP_NAME}Gateway", handler=lambda_)
+        api = RestApi(self, f"{APP_NAME}Api")
+        api.root.add_method("POST", LambdaIntegration(lambda_))
 
         for param_name in SSM_PARAMETER_NAMES:
             StringListParameter.from_string_list_parameter_name(
